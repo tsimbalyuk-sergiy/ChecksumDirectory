@@ -146,6 +146,18 @@ public class Controller implements Initializable, Observer {
         thread.start();
 	}
 
+	public void newInputFile(File f) {
+		txtfilename.setText(f.getAbsolutePath());
+		txtsize.clear();
+		txtmd5.clear();
+		txtsha1.clear();
+		txtsha256.clear();
+		txtsha512.clear();
+		worker.setInputFilename(f.getAbsolutePath());
+		prefs.put(PREF_FILE_INPUT, f.getParentFile().getAbsolutePath());
+		btnrun.setDisable(false);
+	}
+	
 	private void getInputFile() {
 		FileChooser fileChooser = new FileChooser();
 		if(null != fPathInput) {
@@ -158,15 +170,7 @@ public class Controller implements Initializable, Observer {
 		Window w = scene.getWindow();
 		File f = fileChooser.showOpenDialog(w);
 		if(f != null) {
-			txtfilename.setText(f.getAbsolutePath());
-			txtsize.clear();
-			txtmd5.clear();
-			txtsha1.clear();
-			txtsha256.clear();
-			txtsha512.clear();
-			worker.setInputFilename(f.getAbsolutePath());
-			prefs.put(PREF_FILE_INPUT, f.getParentFile().getAbsolutePath());
-			btnrun.setDisable(false);
+			newInputFile(f);
 		}
 	}
 	
