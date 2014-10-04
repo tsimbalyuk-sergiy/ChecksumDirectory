@@ -121,6 +121,12 @@ public class Controller implements Initializable, Observer {
 		btnrun.setOnAction(event -> doRun());
 		btnrun.setDisable(true);
 
+		txtsize.setOnMouseClicked(event -> txtsize.selectAll());
+		txtmd5.setOnMouseClicked(event -> txtmd5.selectAll());
+		txtsha1.setOnMouseClicked(event -> txtsha1.selectAll());
+		txtsha256.setOnMouseClicked(event -> txtsha256.selectAll());
+		txtsha512.setOnMouseClicked(event -> txtsha512.selectAll());
+
 		String sTmp = prefs.get(PREF_FILE_INPUT, null);
 		if(null != sTmp) {
 			fPathInput = new File(sTmp);
