@@ -14,6 +14,9 @@ import javafx.scene.Cursor;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
+import javafx.scene.input.Clipboard;
+import javafx.scene.input.ClipboardContent;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.FileChooser;
 import javafx.stage.Window;
@@ -121,12 +124,12 @@ public class Controller implements Initializable, Observer {
 		btnrun.setOnAction(event -> doRun());
 		btnrun.setDisable(true);
 
-		txtsize.setOnMouseClicked(event -> txtsize.selectAll());
-		txtmd5.setOnMouseClicked(event -> txtmd5.selectAll());
-		txtsha1.setOnMouseClicked(event -> txtsha1.selectAll());
-		txtsha256.setOnMouseClicked(event -> txtsha256.selectAll());
-		txtsha512.setOnMouseClicked(event -> txtsha512.selectAll());
-
+		txtsize.setOnMouseClicked(event -> mouseClick(event, txtsize));
+		txtmd5.setOnMouseClicked(event -> mouseClick(event, txtmd5));
+		txtsha1.setOnMouseClicked(event -> mouseClick(event, txtsha1));
+		txtsha256.setOnMouseClicked(event -> mouseClick(event, txtsha256));
+		txtsha512.setOnMouseClicked(event -> mouseClick(event, txtsha512));
+		
 		String sTmp = prefs.get(PREF_FILE_INPUT, null);
 		if(null != sTmp) {
 			fPathInput = new File(sTmp);
@@ -136,6 +139,17 @@ public class Controller implements Initializable, Observer {
 
 	}
 
+	private void mouseClick(MouseEvent e, TextField tf) {
+		tf.selectAll();
+		if(2 == e.getClickCount()) {
+			String sTmp = tf.getText();
+			final Clipboard clipboard = Clipboard.getSystemClipboard();
+	        final ClipboardContent content = new ClipboardContent();
+	        content.putString(sTmp);
+	        clipboard.setContent(content);
+		} // if
+	}
+	
 	private void doRun() {
 		myroot.getScene().setCursor(Cursor.WAIT);
 
