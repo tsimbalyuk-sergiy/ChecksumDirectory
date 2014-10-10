@@ -39,6 +39,7 @@ public class Controller implements Initializable, Observer {
 	@FXML private Button btnrun;
 	@FXML private TextField txtfilename;
 	@FXML private TextField txtsize;
+	@FXML private TextField txtcrc32;
 	@FXML private TextField txtmd5;
 	@FXML private TextField txtsha1;
 	@FXML private TextField txtsha256;
@@ -47,6 +48,7 @@ public class Controller implements Initializable, Observer {
 	@Override
 	public void update(Observable o, Object arg) {
 		final String sTmpFilesize;
+		final String sTmpCRC32;
 		final String sTmpMD5;
 		final String sTmpSHA1;
 		final String sTmpSHA256;
@@ -63,6 +65,18 @@ public class Controller implements Initializable, Observer {
 				}
 			});
 		} // if Long
+
+		if (arg instanceof HashCRC32) {
+			HashCRC32 hash = (HashCRC32) arg;
+			sTmpCRC32 = hash.getHash();
+			Platform.runLater(new Runnable() {
+
+				@Override
+				public void run() {
+					txtcrc32.setText(sTmpCRC32);
+				}
+			});
+		} // if CRC32
 
 		if (arg instanceof HashMD5) {
 			HashMD5 hash = (HashMD5) arg;
@@ -125,6 +139,7 @@ public class Controller implements Initializable, Observer {
 		btnrun.setDisable(true);
 
 		txtsize.setOnMouseClicked(event -> mouseClick(event, txtsize));
+		txtcrc32.setOnMouseClicked(event -> mouseClick(event, txtcrc32));
 		txtmd5.setOnMouseClicked(event -> mouseClick(event, txtmd5));
 		txtsha1.setOnMouseClicked(event -> mouseClick(event, txtsha1));
 		txtsha256.setOnMouseClicked(event -> mouseClick(event, txtsha256));
@@ -156,6 +171,7 @@ public class Controller implements Initializable, Observer {
 		logger.info("clicked");
 		btnrun.setDisable(true);
 		txtsize.clear();
+		txtcrc32.clear();
 		txtmd5.clear();
 		txtsha1.clear();
 		txtsha256.clear();
@@ -169,6 +185,7 @@ public class Controller implements Initializable, Observer {
 	public void newInputFile(File f) {
 		txtfilename.setText(f.getAbsolutePath());
 		txtsize.clear();
+		txtcrc32.clear();
 		txtmd5.clear();
 		txtsha1.clear();
 		txtsha256.clear();
