@@ -23,5 +23,8 @@ public abstract class HashBase {
 	public final void setHash(String hash) {
 		this.hash = hash;
 	}
-	
+
+	public final void setHash(long hash) {
+		this.hash = String.format("%08x", hash);
+	}	
 }

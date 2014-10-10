@@ -8,6 +8,7 @@ import java.security.DigestInputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Observable;
+import java.util.zip.CRC32;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -17,6 +18,7 @@ public class Worker extends Observable implements Runnable {
 	private String inputFilename;
 
 	private Long filesize = null;
+	private HashCRC32 outputCRC32 = new HashCRC32();
 	private HashMD5 outputMD5 = new HashMD5();
 	private HashSHA1 outputSHA1 = new HashSHA1();
 	private HashSHA256 outputSHA256 = new HashSHA256();
@@ -34,7 +36,10 @@ public class Worker extends Observable implements Runnable {
 	public void run() {
 		filesize = getSize();
 		sendSize();
-		
+
+		hashCRC32();
+		sendCRC32();
+
 		hashMD5();
 		sendMD5();
 
@@ -70,7 +75,26 @@ public class Worker extends Observable implements Runnable {
 		setChanged();
 		notifyObservers(filesize);
 	}
-	
+
+	private void hashCRC32() {
+		final CRC32 crc=new CRC32();
+		try (InputStream is = Files.newInputStream(Paths.get(inputFilename))) {
+			byte[] buffer = new byte[BLOCKSIZE];
+			int iLen;
+			while ((iLen = is.read(buffer)) > -1) {
+				crc.update(buffer, 0, iLen);
+			}
+		} catch (IOException e) {
+			logger.error(e);
+		}
+		outputCRC32.setHash(crc.getValue());
+	}
+
+	private void sendCRC32() {
+		setChanged();
+		notifyObservers(outputCRC32);
+	}
+
 	private void hashMD5() {
 		try {
 			MessageDigest md = MessageDigest.getInstance("MD5");
